@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-STUDENTS = ["Student_01", "Student_02", "Student_03", "Student_04", "Student_05"]
+STUDENTS = ["6710301041", "6710301003", "6710301027", "6710301036", "6720301001", "6720301002"]
 GROUP_SIZE = len(STUDENTS)
 TOTAL_COUPONS = (GROUP_SIZE * 2) - 1
 
@@ -15,6 +15,7 @@ coupons_db: List[str] = [f"COUPON-{i:02d}" for i in range(1, TOTAL_COUPONS + 1)]
 current_coupon_index = 0
 
 student_claims: Dict[str, List[str]] = {student_id: [] for student_id in STUDENTS}
+
 class ClaimRequest(BaseModel):
     student_id: str
 
@@ -44,11 +45,7 @@ async def claim_coupon(req: ClaimRequest):
         # 3. ขยับ Index ไปใบถัดไป (ถ้ามี Request เข้าพร้อมกัน ทั้งคู่อ่าน Index เดียวกัน จะแจกคูปองซ้ำใบเดียวกันทันที!)
         current_coupon_index = index_to_claim + 1
 
-        return {
-            "status": "SUCCESS",
-            "claimed_coupon": coupon,
-            "total_owned": len(student_claims[student_id]),
-        }
+        return {"status": "SUCCESS","claimed_coupon": coupon, "total_owned": len(student_claims[student_id])}
 
     return {"status": "OUT_OF_STOCK", "message": "คูปองหมดแล้ว"}
 
